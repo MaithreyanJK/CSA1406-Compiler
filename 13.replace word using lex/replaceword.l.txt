@@ -1,0 +1,35 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+
+char new_word[] = "code";  // The word to replace it with
+%}
+
+%%
+
+"text" { 
+    printf("%s", new_word);  // Replace the old word with the new one
+}
+
+. { 
+    putchar(yytext[0]);  // Print any other character as is
+}
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    FILE *input_file = fopen("replacetext.txt", "r");  // Open the input file
+    if (!input_file) {
+        perror("Failed to open input file");
+        return 1;
+    }
+    yyin = input_file;  // Set the input stream for lex
+    yylex();  // Perform lexical analysis
+    fclose(input_file);  // Close the input file after processing
+    return 0;
+}
